@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisis TKA SDN Sukasirna II 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f0f4f8;color:#1a202c;padding:1.5rem}
+.header{background:linear-gradient(135deg,#185FA5 0%,#0C447C 100%);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;color:#fff}
+.header h1{font-size:20px;font-weight:600;margin-bottom:4px}
+.header p{font-size:13px;opacity:.85}
+.meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.meta-item{font-size:12px;opacity:.85;display:flex;align-items:center;gap:4px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem}
+.card{background:#fff;border-radius:8px;padding:1rem;text-align:center;border:0.5px solid #e2e8f0}
+.card .lbl{font-size:12px;color:#718096;margin-bottom:6px}
+.card .val{font-size:22px;font-weight:600;color:#1a202c}
+.card .sub{font-size:11px;color:#a0aec0;margin-top:3px}
+.section{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.sec-title{font-size:14px;font-weight:600;color:#1a202c;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.filter-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.filter-row input,.filter-row select{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;background:#fff;color:#1a202c}
+.filter-row input{flex:1;min-width:180px}
+.filter-row input:focus,.filter-row select:focus{border-color:#378ADD}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f7fafc;color:#718096;font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid #e2e8f0}
+td{padding:10px 12px;border-bottom:0.5px solid #edf2f7;color:#1a202c}
+tr:hover td{background:#f7fafc}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-istimewa{background:#E1F5EE;color:#0F6E56}
+.badge-baik{background:#E6F1FB;color:#185FA5}
+.badge-memadai{background:#FAEEDA;color:#854F0B}
+.badge-kurang{background:#FCEBEB;color:#A32D2D}
+.bar-bg{background:#edf2f7;border-radius:4px;height:8px;overflow:hidden;min-width:80px;display:inline-block;vertical-align:middle}
+.bar-fill{height:100%;border-radius:4px}
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.insight-card{border-radius:8px;padding:1rem;border-left:3px solid}
+.ic-blue{background:#E6F1FB;border-color:#185FA5}
+.ic-green{background:#EAF3DE;border-color:#3B6D11}
+.ic-amber{background:#FAEEDA;border-color:#854F0B}
+.ic-red{background:#FCEBEB;border-color:#A32D2D}
+.ic-title{font-size:12px;font-weight:600;margin-bottom:4px}
+.ic-blue .ic-title{color:#0C447C}
+.ic-green .ic-title{color:#27500A}
+.ic-amber .ic-title{color:#633806}
+.ic-red .ic-title{color:#791F1F}
+.ic-body{font-size:12px;line-height:1.6}
+.ic-blue .ic-body{color:#185FA5}
+.ic-green .ic-body{color:#3B6D11}
+.ic-amber .ic-body{color:#854F0B}
+.ic-red .ic-body{color:#A32D2D}
+.rec-item{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid #edf2f7}
+.rec-item:last-child{border-bottom:none}
+.rec-num{width:26px;height:26px;border-radius:50%;background:#E6F1FB;color:#185FA5;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rec-text{font-size:13px;color:#2d3748;line-height:1.6}
+.no-result{text-align:center;padding:2rem;color:#a0aec0;font-size:13px}
+.rank-1{color:#B7791F;font-weight:700}
+.rank-2{color:#718096;font-weight:700}
+.rank-3{color:#3B6D11;font-weight:700}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#718096;margin-bottom:8px}
+.leg-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+.pie-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:center}
+.pie-label{font-size:12px;font-weight:600;color:#718096;margin-bottom:8px}
+footer{text-align:center;font-size:12px;color:#a0aec0;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e2e8f0}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>&#127979; Analisis Hasil TKA — SDN Sukasirna II</h1>
+  <p>Daftar Kolektif Hasil Tes Kemampuan Akademik SD/MI Tahun 2026</p>
+  <div class="meta">
+    <span class="meta-item">&#128205; Kab. Sumedang, Jawa Barat</span>
+    <span class="meta-item">&#128100; Kepala Sekolah: Carsih, S.Pd</span>
+    <span class="meta-item">&#127362; NPSN: 20208536</span>
+    <span class="meta-item">&#128197; 27 Mei 2026</span>
+  </div>
+</div>
+
+<div class="cards" id="summary-cards"></div>
+
+<div class="section">
+  <div class="sec-title">&#128202; Data Nilai Peserta</div>
+  <div class="filter-row">
+    <input type="text" id="search-name" placeholder="🔍  Cari nama siswa..." oninput="filterTable()" />
+    <select id="filter-mapel" onchange="filterTable()">
+      <option value="">Semua Mata Pelajaran</option>
+      <option value="matematika">Matematika</option>
+      <option value="bahasa">Bahasa Indonesia</option>
+    </select>
+    <select id="filter-predikat" onchange="filterTable()">
+      <option value="">Semua Predikat</option>
+      <option value="Baik - Istimewa">Istimewa</option>
+      <option value="Baik">Baik</option>
+      <option value="Memadai">Memadai</option>
+      <option value="Kurang">Kurang</option>
+    </select>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Peringkat</th>
+          <th>Nama Siswa</th>
+          <th>Matematika</th>
+          <th>Bahasa Indonesia</th>
+          <th>Rata-rata</th>
+          <th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-body"></tbody>
+    </table>
+    <div id="no-result" class="no-result" style="display:none">&#128577; Tidak ada data yang cocok</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">&#128202; Perbandingan Nilai per Siswa</div>
+  <div class="chart-legend">
+    <span><span class="leg-dot" style="background:#378ADD"></span>Matematika</span>
+    <span><span class="leg-dot" style="background:#1D9E75"></span>Bahasa Indonesia</span>
+  </div>
+  <div style="position:relative;width:100%;height:520px">
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">&#129030; Distribusi Predikat Nilai</div>
+  <div class="pie-grid">
+    <div>
+      <div class="pie-label">Matematika</div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="pieMatematika"></canvas>
+      </div>
+    </div>
+    <div>
+      <div class="pie-label">Bahasa Indonesia</div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="pieBahasa"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">&#128161; Insight Capaian</div>
+  <div class="insight-grid" id="insight-grid"></div>
+</div>
+
+<div class="section">
+  <div class="sec-title">&#9989; Rekomendasi Strategis</div>
+  <div id="rec-list"></div>
+</div>
+
+<footer>
+  Dicetak dari https://tka.kemendikdasmen.go.id &nbsp;|&nbsp; SDN Sukasirna II &nbsp;|&nbsp; Kab. Sumedang 2026
+</footer>
+
+<script>
+const siswa = [
+  {no:1,nama:"Adit Cahaya Nugraha",matematika:36.67,bahasa:40.00},
+  {no:2,nama:"Novianti Lestari",matematika:36.67,bahasa:80.00},
+  {no:3,nama:"Albarra Putra Hafis",matematika:33.33,bahasa:63.33},
+  {no:4,nama:"Ardilla Syara Putri",matematika:70.00,bahasa:86.67},
+  {no:5,nama:"Mayla Febriani",matematika:43.33,bahasa:60.00},
+  {no:6,nama:"Mecca Fazza Humaira",matematika:66.67,bahasa:70.00},
+  {no:7,nama:"Qinthar Andika Putra",matematika:90.00,bahasa:100.00},
+  {no:8,nama:"Ziqrianti Allia Fitri",matematika:43.33,bahasa:83.33},
+  {no:9,nama:"Amelia Nitiya Nikisa",matematika:46.67,bahasa:53.33},
+  {no:10,nama:"Loi Lutfil Hadi",matematika:40.00,bahasa:56.67},
+  {no:11,nama:"Nifatun Naqiah",matematika:36.67,bahasa:83.33},
+  {no:12,nama:"Raden Mochammad Fadillah Sumadilaga",matematika:50.00,bahasa:90.00},
+  {no:13,nama:"Ilham Ramdhan",matematika:36.67,bahasa:53.33},
+  {no:14,nama:"Malik Rizky Al-Bukhori",matematika:46.67,bahasa:63.33},
+  {no:15,nama:"Muhamad Rizkhi",matematika:53.33,bahasa:66.67},
+  {no:16,nama:"Dika Maulana Gunawan",matematika:36.67,bahasa:63.33},
+  {no:17,nama:"Zulfikar Ramdani",matematika:43.33,bahasa:83.33},
+  {no:18,nama:"Yuni Junita Putri",matematika:43.33,bahasa:53.33},
+  {no:19,nama:"Muhammad Zhein Arsy Fadillah",matematika:23.33,bahasa:60.00}
+];
+
+function predikat(v){
+  if(v>=90)return"Baik - Istimewa";
+  if(v>=70)return"Baik";
+  if(v>=30)return"Memadai";
+  return"Kurang";
+}
+function badgeClass(p){
+  if(p==="Baik - Istimewa")return"badge-istimewa";
+  if(p==="Baik")return"badge-baik";
+  if(p==="Memadai")return"badge-memadai";
+  return"badge-kurang";
+}
+function barColor(v){
+  if(v>=70)return"#378ADD";
+  if(v>=30)return"#BA7517";
+  return"#E24B4A";
+}
+
+const sorted = [...siswa].map(s=>({...s,avg:(s.matematika+s.bahasa)/2})).sort((a,b)=>b.avg-a.avg);
+sorted.forEach((s,i)=>s.rank=i+1);
+
+function buildCards(){
+  const avgMat=(siswa.reduce((a,s)=>a+s.matematika,0)/siswa.length).toFixed(1);
+  const avgBhs=(siswa.reduce((a,s)=>a+s.bahasa,0)/siswa.length).toFixed(1);
+  const memMat=siswa.filter(s=>s.matematika>=30).length;
+  const memBhs=siswa.filter(s=>s.bahasa>=30).length;
+  const cards=[
+    {lbl:"Total Peserta",val:siswa.length,sub:"siswa"},
+    {lbl:"Rata-rata Matematika",val:avgMat,sub:"dari 100"},
+    {lbl:"Rata-rata B. Indonesia",val:avgBhs,sub:"dari 100"},
+    {lbl:"Memadai+ Matematika",val:memMat,sub:"dari "+siswa.length+" siswa"},
+    {lbl:"Memadai+ B. Indonesia",val:memBhs,sub:"dari "+siswa.length+" siswa"}
+  ];
+  document.getElementById("summary-cards").innerHTML=cards.map(c=>`
+    <div class="card">
+      <div class="lbl">${c.lbl}</div>
+      <div class="val">${c.val}</div>
+      <div class="sub">${c.sub}</div>
+    </div>`).join("");
+}
+
+function renderRow(s){
+  const avg=((s.matematika+s.bahasa)/2).toFixed(1);
+  const pm=predikat(s.matematika),pb=predikat(s.bahasa);
+  const rankLabel=s.rank===1?`<span class="rank-1">🥇 1</span>`:s.rank===2?`<span class="rank-2">🥈 2</span>`:s.rank===3?`<span class="rank-3">🥉 3</span>`:s.rank;
+  return`<tr>
+    <td>${rankLabel}</td>
+    <td style="font-weight:600">${s.nama}</td>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="bar-bg" style="width:70px"><div class="bar-fill" style="width:${s.matematika}%;background:${barColor(s.matematika)}"></div></div>
+        <span>${s.matematika.toFixed(1)}</span>
+        <span class="badge ${badgeClass(pm)}">${pm}</span>
+      </div>
+    </td>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="bar-bg" style="width:70px"><div class="bar-fill" style="width:${s.bahasa}%;background:${barColor(s.bahasa)}"></div></div>
+        <span>${s.bahasa.toFixed(1)}</span>
+        <span class="badge ${badgeClass(pb)}">${pb}</span>
+      </div>
+    </td>
+    <td style="font-weight:600">${avg}</td>
+    <td>${avg>=70?'<span class="badge badge-baik">Di atas rata-rata</span>':avg>=50?'<span class="badge badge-memadai">Rata-rata</span>':'<span class="badge badge-kurang">Perlu perhatian</span>'}</td>
+  </tr>`;
+}
+
+function filterTable(){
+  const q=document.getElementById("search-name").value.toLowerCase();
+  const mapel=document.getElementById("filter-mapel").value;
+  const prd=document.getElementById("filter-predikat").value;
+  let filtered=sorted.filter(s=>{
+    const nameMatch=s.nama.toLowerCase().includes(q);
+    let predikatMatch=true;
+    if(prd){
+      if(mapel==="matematika")predikatMatch=predikat(s.matematika)===prd;
+      else if(mapel==="bahasa")predikatMatch=predikat(s.bahasa)===prd;
+      else predikatMatch=predikat(s.matematika)===prd||predikat(s.bahasa)===prd;
+    }
+    return nameMatch&&predikatMatch;
+  });
+  const tbody=document.getElementById("tbl-body");
+  const noResult=document.getElementById("no-result");
+  if(filtered.length===0){tbody.innerHTML="";noResult.style.display="block";}
+  else{noResult.style.display="none";tbody.innerHTML=filtered.map(s=>renderRow(s)).join("");}
+}
+
+function buildInsights(){
+  const avgMat=(siswa.reduce((a,s)=>a+s.matematika,0)/siswa.length).toFixed(1);
+  const avgBhs=(siswa.reduce((a,s)=>a+s.bahasa,0)/siswa.length).toFixed(1);
+  const top=sorted[0];
+  const kurangMat=siswa.filter(s=>s.matematika<30).length;
+  const insights=[
+    {cls:"ic-blue",title:"📈 Tren capaian",body:`Rata-rata Matematika <b>${avgMat}</b> dan B. Indonesia <b>${avgBhs}</b>. B. Indonesia unggul signifikan (+${(avgBhs-avgMat).toFixed(1)} poin).`},
+    {cls:"ic-green",title:"⭐ Siswa terbaik",body:`<b>${top.nama}</b> meraih nilai tertinggi dengan rata-rata <b>${top.avg.toFixed(1)}</b> (Matematika: ${top.matematika}, B. Indonesia: ${top.bahasa}).`},
+    {cls:"ic-amber",title:"⚠️ Kesenjangan mapel",body:`Hanya 3 siswa predikat "Baik" di Matematika vs 8 siswa di B. Indonesia. Kesenjangan signifikan antar mapel.`},
+    {cls:"ic-red",title:"🚨 Siswa perlu intervensi",body:`${kurangMat} siswa Matematika predikat Kurang (<30). Diperlukan program remedial segera.`}
+  ];
+  document.getElementById("insight-grid").innerHTML=insights.map(i=>`
+    <div class="insight-card ${i.cls}">
+      <div class="ic-title">${i.title}</div>
+      <div class="ic-body">${i.body}</div>
+    </div>`).join("");
+}
+
+function buildRecs(){
+  const recs=[
+    "<strong>Program remedial Matematika intensif</strong> — 16 dari 19 siswa berada di predikat Memadai/Kurang untuk Matematika. Jadwalkan sesi remedial mingguan dengan pendekatan kontekstual dan permainan edukatif.",
+    "<strong>Pertahankan kemampuan Bahasa Indonesia</strong> — Manfaatkan kekuatan literasi untuk meningkatkan pemahaman soal cerita di Matematika.",
+    "<strong>Pendampingan khusus untuk 3 siswa bottom</strong> — Albarra Putra Hafis (Mat 33.33), Muhammad Zhein Arsy Fadillah (Mat 23.33), dan Adit Cahaya Nugraha (BI 40.00) memerlukan perhatian individual.",
+    "<strong>Jadikan Qinthar Andika Putra sebagai tutor sebaya</strong> — Nilai tertinggi (Mat 90, BI 100) sangat layak membantu teman melalui program peer-teaching.",
+    "<strong>Evaluasi metode pengajaran Matematika</strong> — Kesenjangan besar (rata-rata Mat ~46 vs BI ~68) mengindikasikan perlunya tinjauan ulang strategi dan media pembelajaran.",
+    "<strong>Prediksi periode berikutnya</strong> — Dengan intervensi remedial, target realistis: rata-rata Matematika ≥55 dan B. Indonesia ≥70. Tanpa intervensi, risiko stagnansi tinggi."
+  ];
+  document.getElementById("rec-list").innerHTML=recs.map((r,i)=>`
+    <div class="rec-item">
+      <div class="rec-num">${i+1}</div>
+      <div class="rec-text">${r}</div>
+    </div>`).join("");
+}
+
+buildCards();
+filterTable();
+buildInsights();
+buildRecs();
+
+const labels=sorted.map(s=>s.nama.length>20?s.nama.substring(0,20)+"…":s.nama);
+new Chart(document.getElementById("barChart"),{
+  type:"bar",
+  data:{
+    labels,
+    datasets:[
+      {label:"Matematika",data:sorted.map(s=>s.matematika),backgroundColor:"#378ADD",borderRadius:3},
+      {label:"Bahasa Indonesia",data:sorted.map(s=>s.bahasa),backgroundColor:"#1D9E75",borderRadius:3}
+    ]
+  },
+  options:{
+    indexAxis:"y",
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.x.toFixed(1)}`}}},
+    scales:{
+      x:{min:0,max:100,grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11}}},
+      y:{ticks:{font:{size:11}}}
+    }
+  }
+});
+
+function countPredikat(fn){
+  return["Baik - Istimewa","Baik","Memadai","Kurang"].map(l=>siswa.filter(s=>fn(s)===l).length);
+}
+const pieColors=["#1D9E75","#378ADD","#BA7517","#E24B4A"];
+
+new Chart(document.getElementById("pieMatematika"),{
+  type:"doughnut",
+  data:{labels:["Baik - Istimewa","Baik","Memadai","Kurang"],datasets:[{data:countPredikat(s=>predikat(s.matematika)),backgroundColor:pieColors,borderWidth:2,borderColor:"#fff"}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:11},padding:8}}}}
+});
+new Chart(document.getElementById("pieBahasa"),{
+  type:"doughnut",
+  data:{labels:["Baik - Istimewa","Baik","Memadai","Kurang"],datasets:[{data:countPredikat(s=>predikat(s.bahasa)),backgroundColor:pieColors,borderWidth:2,borderColor:"#fff"}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:11},padding:8}}}}
+});
+</script>
+</body>
+</html>
